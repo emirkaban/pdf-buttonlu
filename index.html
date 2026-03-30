@@ -2,6 +2,7 @@
 <html lang="tr">
 <head>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -595,6 +596,11 @@
 function pdfOlustur() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
+
+    // 👇 BURAYA EKLENİYOR
+    doc.addFileToVFS("Roboto-Regular.ttf", font);
+    doc.addFont("Roboto-Regular.ttf", "Roboto", "normal");
+    doc.setFont("Roboto");
 
     const clientName = document.getElementById('det-client-name').innerText;
 
