@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.min.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SMMM Onur Yılmaz - Mali Takip</title>
-    
+
     <!-- PWA ve Safari Mobil Ayarları -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Mali Takip">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135706.png">
-    
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -60,17 +60,17 @@
     opacity: 0;
 }
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap');
-        body { 
-            font-family: 'Inter', sans-serif; 
+        body {
+            font-family: 'Inter', sans-serif;
             -webkit-tap-highlight-color: transparent;
             user-select: none;
             overscroll-behavior-y: contain;
         }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        
+
         .safe-area-bottom { padding-bottom: env(safe-area-inset-bottom); }
-        
+
         @keyframes slideIn {
             from { opacity: 0; transform: translateX(20px); }
             to { opacity: 1; transform: translateX(0); }
@@ -190,7 +190,7 @@
                     <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Mali Takip Paneli</span>
                 </div>
             </div>
-            
+
             <div id="header-detail" class="hidden flex items-center space-x-3">
                 <button onclick="switchTab('clients')" class="bg-slate-800 h-10 w-10 rounded-xl flex items-center justify-center">
                     <i class="fas fa-arrow-left text-blue-400"></i>
@@ -208,7 +208,7 @@
     </header>
 
     <div class="max-w-6xl mx-auto p-4">
-        
+
         <!-- 1. ÖZET PANELİ -->
         <div id="dashboard" class="tab-content active space-y-4">
             <div class="grid grid-cols-1 gap-3">
@@ -219,7 +219,7 @@
                     </div>
                     <div id="total-receivable" class="text-3xl font-black text-slate-800 tracking-tighter">₺0,00</div>
                 </div>
-                
+
                 <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-100">
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-xs font-bold text-slate-400 uppercase">Toplam Tahsilat</span>
@@ -259,16 +259,24 @@
         <!-- 3. MÜŞTERİ DETAY SAYFASI -->
         <div id="client-detail" class="tab-content space-y-4">
             <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-100 space-y-4">
-                <div class="flex justify-between items-center">
-                    <div class="flex justify-between items-center">
-    <h2 id="det-client-name" class="font-black text-xl text-slate-800 tracking-tight">Müşteri Adı</h2>
-
-    <button onclick="pdfOlustur()" 
-        class="bg-red-500 text-white text-xs px-3 py-2 rounded-xl font-bold shadow">
-        PDF İndir
-    </button>
-</div>
-                    <span class="bg-blue-100 text-blue-700 text-[10px] font-black px-3 py-1 rounded-full uppercase">Mükellef Kartı</span>
+                <div class="flex flex-col gap-3">
+                    <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                        <div class="min-w-0 flex-1">
+                            <div class="mb-2 text-[10px] font-black uppercase tracking-[0.28em] text-slate-400">Portföy Özeti</div>
+                            <h2 id="det-client-name" class="font-black text-xl text-slate-800 tracking-tight break-words leading-tight">Müşteri Adı</h2>
+                        </div>
+                        <button
+                            type="button"
+                            onclick="pdfOlustur()"
+                            class="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-900 px-4 py-3 text-xs font-black uppercase tracking-[0.2em] text-white shadow-lg shadow-slate-900/15 transition active:scale-[0.98] sm:w-auto sm:shrink-0"
+                        >
+                            <i class="fas fa-file-pdf text-red-400"></i>
+                            PDF İndir
+                        </button>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="bg-blue-100 text-blue-700 text-[10px] font-black px-3 py-1 rounded-full uppercase">Mükellef Kartı</span>
+                    </div>
                 </div>
                 <div class="grid grid-cols-3 gap-2">
                     <div class="text-center p-2 bg-slate-50 rounded-2xl">
@@ -305,8 +313,8 @@
                 <form onsubmit="addRecord(event)" class="space-y-4" autocomplete="off">
                     <div class="space-y-1 relative">
                         <label class="text-[10px] font-bold text-slate-400 uppercase ml-1">Mükellef Adı</label>
-                        <input type="text" id="form-client" required 
-                               class="w-full px-4 py-3 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-blue-500 outline-none font-semibold" 
+                        <input type="text" id="form-client" required
+                               class="w-full px-4 py-3 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-blue-500 outline-none font-semibold"
                                placeholder="Unvan giriniz..."
                                oninput="handleAutocomplete(this.value)"
                                onblur="hideAutocomplete()">
@@ -413,9 +421,9 @@
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            
+
             document.getElementById(tabId).classList.add('active');
-            
+
             const navBtn = document.getElementById('nav-' + tabId);
             if(navBtn) navBtn.classList.add('active');
 
@@ -475,7 +483,7 @@
             document.getElementById('total-receivable').innerText = formatTRY(totals.rec);
             document.getElementById('total-paid').innerText = formatTRY(totals.paid);
             document.getElementById('total-balance').innerText = formatTRY(totals.rec - totals.paid);
-            
+
             const perc = totals.rec > 0 ? (totals.paid / totals.rec * 100).toFixed(1) : 0;
             document.getElementById('progress-bar').style.width = perc + '%';
             document.getElementById('progress-percent').innerText = `%${perc}`;
@@ -593,14 +601,11 @@
     }, 1500);
 });
 function pdfOlustur() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-
     const clientName = document.getElementById('det-client-name').innerText;
 
-    const clientData = transactions.filter(t => 
-        t.client.toUpperCase() === clientName.toUpperCase()
-    );
+    const clientData = transactions
+        .filter(t => t.client.toUpperCase() === clientName.toUpperCase())
+        .sort((a, b) => new Date(a.date) - new Date(b.date));
 
     let totalRec = 0;
     let totalPaid = 0;
@@ -611,35 +616,134 @@ function pdfOlustur() {
 
         return [
             new Date(t.date).toLocaleDateString('tr-TR'),
-            t.receiptNo,
-            t.receivable > 0 ? formatTRY(t.receivable) : "-",
-            t.paid > 0 ? formatTRY(t.paid) : "-"
+            t.receiptNo || 'BELGESIZ',
+            t.receivable > 0 ? formatTRY(t.receivable) : '-',
+            t.paid > 0 ? formatTRY(t.paid) : '-'
         ];
     });
 
-    // BAŞLIK
-    doc.setFontSize(16);
-    doc.text("Mükellef Ekstresi", 14, 15);
+    const generatedAt = new Date().toLocaleDateString('tr-TR');
+    const balance = totalRec - totalPaid;
+    const collectionRate = totalRec > 0 ? ((totalPaid / totalRec) * 100).toFixed(1) : '0.0';
 
-    doc.setFontSize(12);
-    doc.text("Mükellef: " + clientName, 14, 25);
+    const docDefinition = {
+        pageSize: 'A4',
+        pageMargins: [36, 42, 36, 42],
+        background: function(currentPage) {
+            if (currentPage !== 1) return null;
+            return {
+                canvas: [
+                    { type: 'rect', x: 0, y: 0, w: 595.28, h: 120, color: '#0f172a' }
+                ]
+            };
+        },
+        content: [
+            {
+                margin: [0, 0, 0, 22],
+                stack: [
+                    { text: 'MUKELLEF EKSTRESI', style: 'title' },
+                    { text: clientName, style: 'subtitle' },
+                    { text: 'Olusturma Tarihi: ' + generatedAt, style: 'meta' }
+                ]
+            },
+            {
+                style: 'tableWrapper',
+                table: {
+                    headerRows: 1,
+                    widths: ['auto', '*', 'auto', 'auto'],
+                    body: [
+                        [
+                            { text: 'Tarih', style: 'tableHeader' },
+                            { text: 'Belge No', style: 'tableHeader' },
+                            { text: 'Tahakkuk', style: 'tableHeader' },
+                            { text: 'Tahsilat', style: 'tableHeader' }
+                        ],
+                        ...tableData.map(row => row.map(cell => ({ text: cell, style: 'tableCell' })))
+                    ]
+                },
+                layout: {
+                    fillColor: function(rowIndex) {
+                        if (rowIndex === 0) return '#0f172a';
+                        return rowIndex % 2 === 0 ? '#f8fafc' : null;
+                    },
+                    hLineColor: function(rowIndex) {
+                        return rowIndex === 1 ? '#1e293b' : '#e2e8f0';
+                    },
+                    vLineColor: function() { return '#e2e8f0'; },
+                    hLineWidth: function() { return 0.8; },
+                    vLineWidth: function() { return 0.8; },
+                    paddingLeft: function() { return 8; },
+                    paddingRight: function() { return 8; },
+                    paddingTop: function() { return 6; },
+                    paddingBottom: function() { return 6; }
+                }
+            },
+            {
+                columns: [
+                    {
+                        width: '*',
+                        stack: [
+                            { text: 'Toplam Tahakkuk', style: 'cardLabel' },
+                            { text: formatTRY(totalRec), style: 'cardValueBlue' }
+                        ],
+                        margin: [0, 8, 6, 10],
+                        fillColor: '#eff6ff'
+                    },
+                    {
+                        width: '*',
+                        stack: [
+                            { text: 'Toplam Tahsilat', style: 'cardLabel' },
+                            { text: formatTRY(totalPaid), style: 'cardValueGreen' }
+                        ],
+                        margin: [0, 8, 6, 10],
+                        fillColor: '#ecfdf5'
+                    },
+                    {
+                        width: '*',
+                        stack: [
+                            { text: 'Bakiye', style: 'cardLabel' },
+                            { text: formatTRY(balance), style: 'cardValueAmber' }
+                        ],
+                        margin: [0, 8, 0, 10],
+                        fillColor: '#fffbeb'
+                    }
+                ],
+                columnGap: 8
+            },
+            {
+                text: 'Tahsilat Orani: %' + collectionRate,
+                style: 'collectionRate'
+            }
+        ],
+        styles: {
+            brand: { fontSize: 9, bold: true, color: '#93c5fd', margin: [0, 0, 0, 6] },
+            title: { fontSize: 20, bold: true, color: '#ffffff', margin: [0, 0, 0, 6] },
+            subtitle: { fontSize: 13, bold: true, color: '#e2e8f0', margin: [0, 0, 0, 6] },
+            meta: { fontSize: 9, color: '#94a3b8' },
+            cardLabel: { fontSize: 8, bold: true, color: '#64748b', margin: [8, 8, 8, 2] },
+            cardValueBlue: { fontSize: 12, bold: true, color: '#1d4ed8', margin: [8, 0, 8, 8] },
+            cardValueGreen: { fontSize: 12, bold: true, color: '#047857', margin: [8, 0, 8, 8] },
+            cardValueAmber: { fontSize: 12, bold: true, color: '#b45309', margin: [8, 0, 8, 8] },
+            tableHeader: { fontSize: 10, bold: true, color: '#f8fafc' },
+            tableCell: { fontSize: 9.5, color: '#0f172a' },
+            collectionRate: { fontSize: 10, bold: true, color: '#0f172a', margin: [0, 2, 0, 10] },
+            tableWrapper: { margin: [0, 0, 0, 8] }
+        },
+        defaultStyle: {
+            fontSize: 10
+        },
+        footer: function(currentPage, pageCount) {
+            return {
+                margin: [36, 0, 36, 16],
+                columns: [
+                    { text: 'Mali Takip Raporu', color: '#94a3b8', fontSize: 8 },
+                    { text: currentPage + ' / ' + pageCount, alignment: 'right', color: '#94a3b8', fontSize: 8 }
+                ]
+            };
+        }
+    };
 
-    // TABLO
-    doc.autoTable({
-        startY: 30,
-        head: [["Tarih", "Belge No", "Tahakkuk", "Tahsilat"]],
-        body: tableData
-    });
-
-    // ÖZET
-    const finalY = doc.lastAutoTable.finalY + 10;
-
-    doc.text("Toplam Tahakkuk: " + formatTRY(totalRec), 14, finalY);
-    doc.text("Toplam Tahsilat: " + formatTRY(totalPaid), 14, finalY + 7);
-    doc.text("Bakiye: " + formatTRY(totalRec - totalPaid), 14, finalY + 14);
-
-    // İNDİR
-    doc.save(clientName + "_ekstre.pdf");
+    pdfMake.createPdf(docDefinition).download(clientName + '_ekstre.pdf');
 }
     </script>
 </body>
